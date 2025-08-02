@@ -38,7 +38,6 @@ def compute_fft_spectrum(image):
     magnitude_spectrum = np.abs(fft_shifted)
     magnitude_spectrum = np.log1p(magnitude_spectrum)  # log(1 + x) to compress dynamic range
     
-    # Normalize to [0, 255] for visualization
     spectrum_image = (magnitude_spectrum / np.max(magnitude_spectrum) * 255).astype(np.uint8)
     
     return spectrum_image

@@ -76,6 +76,12 @@ horizontal_edges_pil = Image.fromarray(np.uint8(horizontal_edges))
 horizontal_edges_pil.save('20701014_Q4/20701014_Q4_horizontal_output.jpg')
 vertical_edges_pil.save('20701014_Q4/20701014_Q4_vertical_output.jpg')
 
-output_image = combine_edges(vertical_edges, horizontal_edges)
-output_image_pil = Image.fromarray(np.uint8(output_image))
-output_image_pil.save('20701014_Q4/20701014_Q4_output.jpg')
+# create collage of both edge images
+collage_width = vertical_edges.shape[1] + horizontal_edges.shape[1]
+collage_height = max(vertical_edges.shape[0], horizontal_edges.shape[0])
+collage = np.zeros((collage_height, collage_width), dtype=np.uint8)
+collage[:vertical_edges.shape[0], :vertical_edges.shape[1]] = vertical_edges
+collage[:horizontal_edges.shape[0], vertical_edges.shape[1]:] = horizontal_edges
+
+collage_pil = Image.fromarray(np.uint8(collage))
+collage_pil.save('20701014_Q4/20701014_Q4_output.jpg')
