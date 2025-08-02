@@ -45,7 +45,6 @@ def apply_butterworth_lowpass_filter(image, cutoff_radius=None, order=2):
     
     for i in range(height):
         for j in range(width):
-            # compute distance from center
             distance = math.sqrt((i - center_y)**2 + (j - center_x)**2)
             # butterworth filter response
             mask[i, j] = 1.0 / (1.0 + (distance / cutoff_radius)**(2 * order))

@@ -74,11 +74,17 @@ def apply_median_filter(image, kernel_size=3):
             filtered_image[i, j] = median_value
     return filtered_image
 
-preprocessed_image = preprocess_image(image_path='20701014_Q5/input.jpg')
+preprocessed_image = preprocess_image(image_path='20701014_Q5/20701014_Q5_input.jpg')
 noisy_image = add_salt_pepper_noise(preprocessed_image)
 noisy_image_pil = Image.fromarray(np.uint8(noisy_image))
-noisy_image_pil.save('20701014_Q5/20701014_Q5_input.jpg')
+noisy_image_pil.save('20701014_Q5/20701014_Q5_noisy.jpg')
 filtered_image = apply_median_filter(noisy_image, kernel_size=3)
 
-filtered_image_pil = Image.fromarray(np.uint8(filtered_image))
-filtered_image_pil.save('20701014_Q5/20701014_Q5_output.jpg')
+# collage of noisy and filtered images
+collage_width = noisy_image.shape[1] + filtered_image.shape[1]
+collage_height = max(noisy_image.shape[0], filtered_image.shape[0])
+collage = np.zeros((collage_height, collage_width), dtype=np.uint8)
+collage[:noisy_image.shape[0], :noisy_image.shape[1]] = noisy_image
+collage[:filtered_image.shape[0], noisy_image.shape[1]:] = filtered_image
+collage_pil = Image.fromarray(np.uint8(collage))
+collage_pil.save('20701014_Q5/20701014_Q5_output.jpg')

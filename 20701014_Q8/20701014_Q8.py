@@ -34,32 +34,26 @@ def apply_ideal_lowpass_filter(image, cutoff_radius=None):
     if cutoff_radius is None:
         cutoff_radius = min(height, width) / 6
     
-    # Convert to float32 for FFT
     image_float = image.astype(np.float32)
     
-    # Compute 2D FFT and shift to center low frequencies
     fft_result = np.fft.fft2(image_float)
     fft_shifted = np.fft.fftshift(fft_result)
     
-    # Create ideal low-pass filter mask
+    # create ideal low-pass filter mask
     mask = np.zeros((height, width), dtype=np.float32)
     center_y, center_x = height // 2, width // 2
     
     for i in range(height):
         for j in range(width):
-            # Compute distance from center
             distance = math.sqrt((i - center_y)**2 + (j - center_x)**2)
             if distance <= cutoff_radius:
                 mask[i, j] = 1.0
     
-    # Apply the filter
     fft_filtered = fft_shifted * mask
     
-    # Inverse FFT and shift back
     fft_ishifted = np.fft.ifftshift(fft_filtered)
     filtered_image = np.fft.ifft2(fft_ishifted)
     
-    # Take the real part and normalize to [0, 255]
     filtered_image = np.real(filtered_image)
     filtered_image = np.clip(filtered_image, 0, 255).astype(np.uint8)
     
