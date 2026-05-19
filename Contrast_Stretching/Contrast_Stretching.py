@@ -45,9 +45,9 @@ def apply_contrast_stretching(image):
     
     return enhanced_image
 
-image_path = '20701014_Q14/20701014_Q14_input.jpg'
+image_path = 'Contrast_Stretching/Contrast_Stretching_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
     enhanced_image = apply_contrast_stretching(preprocessed_image)
     enhanced_image_pil = Image.fromarray(enhanced_image)
-    enhanced_image_pil.save('20701014_Q14/20701014_Q14_output.jpg')
+    enhanced_image_pil.save('Contrast_Stretching/Contrast_Stretching_output.jpg')

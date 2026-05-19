@@ -39,7 +39,7 @@ def apply_gamma_correction(image, gamma):
 
     return corrected
 
-image_path = '20701014_Q17/20701014_Q17_input.jpg'
+image_path = 'Gamma_Correction/Gamma_Correction_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
     # gamma < 1 brightens the image, gamma > 1 darkens it
@@ -54,4 +54,4 @@ if preprocessed_image is not None:
     collage[:, width * 2:] = darkened
 
     collage_pil = Image.fromarray(collage)
-    collage_pil.save('20701014_Q17/20701014_Q17_output.jpg')
+    collage_pil.save('Gamma_Correction/Gamma_Correction_output.jpg')

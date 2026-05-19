@@ -24,66 +24,50 @@ def preprocess_image(image_path):
         print(f"Error processing image: {e}")
         return None
 
-def apply_logical_and(image1, image2):
-    if image1.shape != image2.shape:
-        raise ValueError("Images must have the same dimensions")
-    height, width = image1.shape
-    result = np.zeros((height, width), dtype=np.uint8)
-    for i in range(height):
-        for j in range(width):
-            result[i, j] = image1[i, j] & image2[i, j]
-    return result
-
-def apply_logical_or(image1, image2):
-    if image1.shape != image2.shape:
-        raise ValueError("Images must have the same dimensions")
-    height, width = image1.shape
-    result = np.zeros((height, width), dtype=np.uint8)
-    for i in range(height):
-        for j in range(width):
-            result[i, j] = image1[i, j] | image2[i, j]
-    return result
-
-def apply_logical_not(image):
+def add_constant(image, value):
     if len(image.shape) != 2:
         raise ValueError("Image must be grayscale (2D)")
     height, width = image.shape
     result = np.zeros((height, width), dtype=np.uint8)
     for i in range(height):
         for j in range(width):
-            result[i, j] = 255 - image[i, j]
+            result[i, j] = min(255, max(0, int(image[i, j]) + value))
     return result
 
-def apply_logical_xor(image1, image2):
-    if image1.shape != image2.shape:
-        raise ValueError("Images must have the same dimensions")
-    height, width = image1.shape
+def subtract_constant(image, value):
+    if len(image.shape) != 2:
+        raise ValueError("Image must be grayscale (2D)")
+    height, width = image.shape
     result = np.zeros((height, width), dtype=np.uint8)
     for i in range(height):
         for j in range(width):
-            result[i, j] = image1[i, j] ^ image2[i, j]
+            result[i, j] = min(255, max(0, int(image[i, j]) - value))
     return result
 
-image_path = '20701014_Q19/20701014_Q19_input.jpg'
+def multiply_constant(image, scalar):
+    if len(image.shape) != 2:
+        raise ValueError("Image must be grayscale (2D)")
+    height, width = image.shape
+    result = np.zeros((height, width), dtype=np.uint8)
+    for i in range(height):
+        for j in range(width):
+            result[i, j] = min(255, max(0, int(image[i, j] * scalar)))
+    return result
+
+image_path = 'Arithmetic_Operation/Arithmetic_Operation_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
+    added = add_constant(preprocessed_image, 50)         # Addition: increases brightness
+    subtracted = subtract_constant(preprocessed_image, 50)  # Subtraction: decreases brightness
+    multiplied = multiply_constant(preprocessed_image, 1.5)  # Multiplication: scales intensity
+
+    # Create collage: original | added | subtracted | multiplied
     height, width = preprocessed_image.shape
-
-    # Create a mask: left half white (255), right half black (0)
-    mask = np.zeros((height, width), dtype=np.uint8)
-    mask[:, :width // 2] = 255
-
-    and_result = apply_logical_and(preprocessed_image, mask)
-    or_result = apply_logical_or(preprocessed_image, mask)
-    not_result = apply_logical_not(preprocessed_image)
-    xor_result = apply_logical_xor(preprocessed_image, mask)
-
-    # Create collage: AND | OR | NOT | XOR
     collage = np.zeros((height, width * 4), dtype=np.uint8)
-    collage[:, :width] = and_result
-    collage[:, width:width * 2] = or_result
-    collage[:, width * 2:width * 3] = not_result
-    collage[:, width * 3:] = xor_result
+    collage[:, :width] = preprocessed_image
+    collage[:, width:width * 2] = added
+    collage[:, width * 2:width * 3] = subtracted
+    collage[:, width * 3:] = multiplied
 
     collage_pil = Image.fromarray(collage)
-    collage_pil.save('20701014_Q19/20701014_Q19_output.jpg')
+    collage_pil.save('Arithmetic_Operation/Arithmetic_Operation_output.jpg')
