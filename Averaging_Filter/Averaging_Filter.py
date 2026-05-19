@@ -55,11 +55,11 @@ def apply_averaging_filter(image, kernel_size):
             filtered_image[i, j] = np.sum(neighbors * kernel)
     return filtered_image
 
-preprocessed_image = preprocess_image(image_path='20701014_Q1/20701014_Q1_input.jpg')
+preprocessed_image = preprocess_image(image_path='Averaging_Filter/Averaging_Filter_input.jpg')
 # noisy_image = add_gaussian_noise(preprocessed_image)
 # noisy_image_pil = Image.fromarray(np.uint8(noisy_image))
-# noisy_image_pil.save('20701014_Q1/20701014_Q1_input.jpg')
+# noisy_image_pil.save('Averaging_Filter/Averaging_Filter_input.jpg')
 filtered_image = apply_averaging_filter(preprocessed_image, kernel_size=3)
 
 filtered_image_pil = Image.fromarray(np.uint8(filtered_image))
-filtered_image_pil.save('20701014_Q1/20701014_Q1_output.jpg')
+filtered_image_pil.save('Averaging_Filter/Averaging_Filter_output.jpg')

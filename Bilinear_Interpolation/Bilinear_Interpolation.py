@@ -61,9 +61,9 @@ def apply_bilinear_interpolation(image, scale_x, scale_y):
 
     return output
 
-image_path = '20701014_Q16/20701014_Q16_input.jpg'
+image_path = 'Bilinear_Interpolation/Bilinear_Interpolation_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
     output_image = apply_bilinear_interpolation(preprocessed_image, scale_x=1.5, scale_y=1.5)
     output_image_pil = Image.fromarray(output_image)
-    output_image_pil.save('20701014_Q16/20701014_Q16_output.jpg')
+    output_image_pil.save('Bilinear_Interpolation/Bilinear_Interpolation_output.jpg')

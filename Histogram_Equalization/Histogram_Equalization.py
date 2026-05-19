@@ -65,9 +65,9 @@ def apply_histogram_equalization_rgb_scratch(image):
     
     return enhanced_image.astype(np.uint8)
 
-image_path = '20701014_Q15/20701014_Q15_input.jpg'
+image_path = 'Histogram_Equalization/Histogram_Equalization_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
     enhanced_image = apply_histogram_equalization_rgb_scratch(preprocessed_image)
     enhanced_image_pil = Image.fromarray(enhanced_image)
-    enhanced_image_pil.save('20701014_Q15/20701014_Q15_output.jpg')
+    enhanced_image_pil.save('Histogram_Equalization/Histogram_Equalization_output.jpg')

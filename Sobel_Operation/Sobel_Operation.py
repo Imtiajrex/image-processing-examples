@@ -67,14 +67,14 @@ def combine_edges(vertical_edges, horizontal_edges):
     return G_magnitude.clip(0, 255).astype(np.uint8)
 
 
-preprocessed_image = preprocess_image('20701014_Q4/20701014_Q4_input.jpg')
+preprocessed_image = preprocess_image('Sobel_Operation/Sobel_Operation_input.jpg')
 vertical_edges = detect_sobel_edges(image = preprocessed_image, vertical=True)
 horizontal_edges = detect_sobel_edges(image= preprocessed_image, vertical=False)
 
 vertical_edges_pil = Image.fromarray(np.uint8(vertical_edges))
 horizontal_edges_pil = Image.fromarray(np.uint8(horizontal_edges))
-horizontal_edges_pil.save('20701014_Q4/20701014_Q4_horizontal_output.jpg')
-vertical_edges_pil.save('20701014_Q4/20701014_Q4_vertical_output.jpg')
+horizontal_edges_pil.save('Sobel_Operation/Sobel_Operation_horizontal_output.jpg')
+vertical_edges_pil.save('Sobel_Operation/Sobel_Operation_vertical_output.jpg')
 
 # create collage of both edge images
 collage_width = vertical_edges.shape[1] + horizontal_edges.shape[1]
@@ -84,4 +84,4 @@ collage[:vertical_edges.shape[0], :vertical_edges.shape[1]] = vertical_edges
 collage[:horizontal_edges.shape[0], vertical_edges.shape[1]:] = horizontal_edges
 
 collage_pil = Image.fromarray(np.uint8(collage))
-collage_pil.save('20701014_Q4/20701014_Q4_output.jpg')
+collage_pil.save('Sobel_Operation/Sobel_Operation_output.jpg')
