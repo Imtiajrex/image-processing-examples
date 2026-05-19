@@ -1,12 +1,11 @@
 from PIL import Image
 import numpy as np
-import math, random
 
 def preprocess_image(image_path):
     try:
         image = Image.open(image_path)
         image_array = np.array(image)
-        
+
         # Check if image is already grayscale (2D) or color (3D)
         if len(image_array.shape) == 2:
             return image_array
@@ -25,53 +24,66 @@ def preprocess_image(image_path):
         print(f"Error processing image: {e}")
         return None
 
-def binarize_and_remove_small_objects(image, min_size=50):
+def apply_logical_and(image1, image2):
+    if image1.shape != image2.shape:
+        raise ValueError("Images must have the same dimensions")
+    height, width = image1.shape
+    result = np.zeros((height, width), dtype=np.uint8)
+    for i in range(height):
+        for j in range(width):
+            result[i, j] = image1[i, j] & image2[i, j]
+    return result
+
+def apply_logical_or(image1, image2):
+    if image1.shape != image2.shape:
+        raise ValueError("Images must have the same dimensions")
+    height, width = image1.shape
+    result = np.zeros((height, width), dtype=np.uint8)
+    for i in range(height):
+        for j in range(width):
+            result[i, j] = image1[i, j] | image2[i, j]
+    return result
+
+def apply_logical_not(image):
     if len(image.shape) != 2:
         raise ValueError("Image must be grayscale (2D)")
-    
     height, width = image.shape
-    
-    # binarize
-    binary_image = np.zeros((height, width), dtype=np.uint8)
-    threshold = 128
+    result = np.zeros((height, width), dtype=np.uint8)
     for i in range(height):
         for j in range(width):
-            binary_image[i, j] = 255 if image[i, j] >= threshold else 0
-    
-    # connected component labeling
-    label = 0
-    labels = np.zeros((height, width), dtype=np.int32)
-    object_sizes = {}
-    
+            result[i, j] = 255 - image[i, j]
+    return result
+
+def apply_logical_xor(image1, image2):
+    if image1.shape != image2.shape:
+        raise ValueError("Images must have the same dimensions")
+    height, width = image1.shape
+    result = np.zeros((height, width), dtype=np.uint8)
     for i in range(height):
         for j in range(width):
-            if binary_image[i, j] == 255 and labels[i, j] == 0:
-                label += 1
-                size = 0
-                stack = [(i, j)]
-                while stack:
-                    x, y = stack.pop()
-                    if 0 <= x < height and 0 <= y < width and binary_image[x, y] == 255 and labels[x, y] == 0:
-                        labels[x, y] = label
-                        size += 1
-                        # Check 4-connectivity (up, down, left, right)
-                        stack.append((x-1, y))
-                        stack.append((x+1, y))
-                        stack.append((x, y-1))
-                        stack.append((x, y+1))
-                object_sizes[label] = size
-    
-    cleaned_image = np.zeros((height, width), dtype=np.uint8)
-    for i in range(height):
-        for j in range(width):
-            if labels[i, j] > 0 and object_sizes.get(labels[i, j], 0) >= min_size:
-                cleaned_image[i, j] = 255
-    
-    return cleaned_image
+            result[i, j] = image1[i, j] ^ image2[i, j]
+    return result
 
 image_path = '20701014_Q19/20701014_Q19_input.jpg'
 preprocessed_image = preprocess_image(image_path)
 if preprocessed_image is not None:
-    cleaned_image = binarize_and_remove_small_objects(preprocessed_image, min_size=100)
-    cleaned_image_pil = Image.fromarray(cleaned_image)
-    cleaned_image_pil.save('20701014_Q19/20701014_Q19_output.jpg')
+    height, width = preprocessed_image.shape
+
+    # Create a mask: left half white (255), right half black (0)
+    mask = np.zeros((height, width), dtype=np.uint8)
+    mask[:, :width // 2] = 255
+
+    and_result = apply_logical_and(preprocessed_image, mask)
+    or_result = apply_logical_or(preprocessed_image, mask)
+    not_result = apply_logical_not(preprocessed_image)
+    xor_result = apply_logical_xor(preprocessed_image, mask)
+
+    # Create collage: AND | OR | NOT | XOR
+    collage = np.zeros((height, width * 4), dtype=np.uint8)
+    collage[:, :width] = and_result
+    collage[:, width:width * 2] = or_result
+    collage[:, width * 2:width * 3] = not_result
+    collage[:, width * 3:] = xor_result
+
+    collage_pil = Image.fromarray(collage)
+    collage_pil.save('20701014_Q19/20701014_Q19_output.jpg')
